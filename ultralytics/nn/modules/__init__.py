@@ -17,7 +17,7 @@ Examples:
     >>> subprocess.run(f"onnxslim {f} {f} && open {f}", shell=True, check=True)  # pip install onnxslim
 """
 
-from .blockori import (
+from .block import (
     C1,
     C2,
     C2PSA,
@@ -54,6 +54,7 @@ from .blockori import (
     ImagePoolingAttn,
     MaxSigmoidAttnBlock,
     Proto,
+    Proto26,
     RepC3,
     RepNCSPELAN4,
     RepVGGDW,

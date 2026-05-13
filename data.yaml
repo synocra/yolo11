@@ -1,4 +1,4 @@
-path: /content/tugasakhir/dataset
+path: /content/yolo/dataset
 
 train: images/train
 val: images/val

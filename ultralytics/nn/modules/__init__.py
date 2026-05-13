@@ -17,13 +17,14 @@ Examples:
     >>> subprocess.run(f"onnxslim {f} {f} && open {f}", shell=True, check=True)  # pip install onnxslim
 """
 
-from .block import (
+from .blockori import (
     C1,
     C2,
     C2PSA,
     C3,
     C3TR,
     CIB,
+    CoordAtt,
     DFL,
     ELAN1,
     PSA,
@@ -115,6 +116,7 @@ __all__ = (
     "C3TR",
     "CBAM",
     "CIB",
+    "CoordAtt",
     "DFL",
     "ELAN1",
     "MLP",
@@ -126,6 +128,7 @@ __all__ = (
     "SPPF",
     "A2C2f",
     "AConv",
+    "Proto26",
     "ADown",
     "Attention",
     "BNContrastiveHead",

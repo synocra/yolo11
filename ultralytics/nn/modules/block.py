@@ -695,21 +695,16 @@ class CBAM(nn.Module):
 ##
 ##
 class CoordAtt_improved_new(nn.Module):
-    def __init__(self, inp, oup, reduction=32,refine_kernel=7,residual_gate=False,eps=1e-6,useAvgPool=False):
-        
- 
-    def forward(self, x):
-          
-        return x
+    def __init__(self, inp, oup, reduction=32,refine_kernel=7,residual_gate=False,eps=1e-6,useAvgPool=False):  
+        def forward(self, x): 
+            return x
 
        
 
 class CoordAtt_improved(nn.Module):
     def __init__(self, inp, oup, reduction=32,refine_kernel=7,residual_gate=False,eps=1e-6,useAvgPool=False):
- 
- 
-    def forward(self, x):
-        return x
+        def forward(self, x):
+            return x
     
 
 #DIUBAH DI SINI

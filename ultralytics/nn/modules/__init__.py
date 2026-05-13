@@ -54,7 +54,6 @@ from .block import (
     ImagePoolingAttn,
     MaxSigmoidAttnBlock,
     Proto,
-    Proto26,
     RepC3,
     RepNCSPELAN4,
     RepVGGDW,

@@ -1,4 +1,4 @@
-path: /content/yolo/dataset
+path: /content/yolo11/dataset
 
 train: images/train
 val: images/val

@@ -363,9 +363,9 @@ class C2f(nn.Module):
         self.att_type=att_type
         if self.use_att and self.att_type=="CA":
             if self.in_shortcut:
-                self.ca=CoordAtt(inp=(2 + n) * self.c,oup=(2 + n) * self.c,reduction=reduction)  # oup == (2 + n) * self.c
+                self.ca=CoordAtt(c1=(2 + n) * self.c,c2=(2 + n) * self.c,reduction=reduction)  # oup == (2 + n) * self.c
             else:
-                self.ca=CoordAtt(inp=c2,oup=c2,reduction=reduction)  # oup == c2
+                self.ca=CoordAtt(c1=c2,c2=c2,reduction=reduction)  # oup == c2
         print("Param", c2,g,n,e,use_att,att_type,reduction,useAvgPool)   
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:

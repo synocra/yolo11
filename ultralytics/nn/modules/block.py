@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
 from ultralytics.utils.torch_utils import fuse_conv_and_bn
 
@@ -57,10 +57,10 @@ __all__ = (
 
 class CoordAtt(nn.Module):
     """Coordinate Attention for efficient mobile network design.
-    
-    Embeds positional information into channel attention by decomposing
-    global pooling into two 1D feature encodings (horizontal + vertical).
-    
+
+    Embeds positional information into channel attention by decomposing global pooling into two 1D feature encodings
+    (horizontal + vertical).
+
     Reference: https://arxiv.org/abs/2103.02907
     """
 
@@ -77,33 +77,34 @@ class CoordAtt(nn.Module):
         mid_channels = max(8, channels // reduction)
 
         self.conv1 = nn.Conv2d(channels, mid_channels, kernel_size=1, bias=False)
-        self.bn1   = nn.BatchNorm2d(mid_channels)
-        self.act   = nn.Hardswish()
+        self.bn1 = nn.BatchNorm2d(mid_channels)
+        self.act = nn.Hardswish()
 
         self.conv_h = nn.Conv2d(mid_channels, channels, kernel_size=1, bias=False)
         self.conv_w = nn.Conv2d(mid_channels, channels, kernel_size=1, bias=False)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Apply coordinate attention to input tensor x."""
-        B, C, H, W = x.shape
+        _B, _C, H, W = x.shape
 
         # Encode spatial info in two orthogonal directions
-        x_h = self.pool_h(x)               # (B, C, H, 1)
+        x_h = self.pool_h(x)  # (B, C, H, 1)
         x_w = self.pool_w(x).permute(0, 1, 3, 2)  # (B, C, W, 1)
 
         # Shared transformation on concatenated H+W tokens
-        y = torch.cat([x_h, x_w], dim=2)   # (B, C, H+W, 1)
+        y = torch.cat([x_h, x_w], dim=2)  # (B, C, H+W, 1)
         y = self.act(self.bn1(self.conv1(y)))
 
         # Split back into H and W attention maps
         x_h, x_w = torch.split(y, [H, W], dim=2)
-        x_w = x_w.permute(0, 1, 3, 2)      # (B, C, 1, W)
+        x_w = x_w.permute(0, 1, 3, 2)  # (B, C, 1, W)
 
         # Generate attention weights and apply
-        a_h = self.conv_h(x_h).sigmoid()   # (B, C, H, 1)
-        a_w = self.conv_w(x_w).sigmoid()   # (B, C, 1, W)
+        a_h = self.conv_h(x_h).sigmoid()  # (B, C, H, 1)
+        a_w = self.conv_w(x_w).sigmoid()  # (B, C, 1, W)
 
-        return x * a_h * a_w               # broadcast multiply
+        return x * a_h * a_w  # broadcast multiply
+
 
 class DFL(nn.Module):
     """Integral module of Distribution Focal Loss (DFL).
@@ -370,11 +371,10 @@ class C2f(nn.Module):
 
     def forward_split(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass using split() instead of chunk()."""
-
         y = self.cv1(x).split((self.c, self.c), 1)
         y = [y[0], y[1]]
         y.extend(m(y[-1]) for m in self.m)
-        if self.use_att and self.att_type=="CA":
+        if self.use_att and self.att_type == "CA":
             return self.ca(self.cv2(torch.cat(y, 1)))
         return self.cv2(torch.cat(y, 1))
 
@@ -1128,7 +1128,7 @@ class C3f(nn.Module):
 
 class C3k2(C2f):
     """Faster Implementation of CSP Bottleneck with 2 convolutions.
-    
+
     Optionally fused with Coordinate Attention after the CSP output.
     """
 
@@ -1140,7 +1140,7 @@ class C3k2(C2f):
         c3k: bool = False,
         e: float = 0.5,
         attn: bool = False,
-        ca: bool = False,       # ← NEW: toggle Coordinate Attention
+        ca: bool = False,  # ← NEW: toggle Coordinate Attention
         g: int = 1,
         shortcut: bool = True,
     ):
@@ -1177,10 +1177,11 @@ class C3k2(C2f):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass with optional Coordinate Attention."""
-        out = super().forward(x)          # standard C2f forward
+        out = super().forward(x)  # standard C2f forward
         if self.ca_attn is not None:
-            out = self.ca_attn(out)       # apply CA on full output
+            out = self.ca_attn(out)  # apply CA on full output
         return out
+
 
 class C3k(C3):
     """C3k is a CSP bottleneck module with customizable kernel sizes for feature extraction in neural networks."""
